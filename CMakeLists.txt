@@ -1,8 +1,17 @@
-cmake_minimum_required(VERSION 3.28)
+cmake_minimum_required(VERSION 3.26)
 
 project(minesweeper)
 
+if(CMAKE_C_COMPILER_ID STREQUAL "MSVC")
+  message(FATAL_ERROR "The MSVC compiler is not supported.")
+endif()
+
 include(FetchContent)
+find_package(Python3 COMPONENTS Interpreter)
+
+if(NOT Python3_FOUND)
+  message(FATAL_ERROR "Python was not found.")
+endif()
 
 set(CMAKE_C_STANDARD 99)
 set(FETCHCONTENT_QUIET FALSE)
@@ -18,7 +27,7 @@ FetchContent_Declare(raylib
 FetchContent_MakeAvailable(raylib)
 
 execute_process(
-  COMMAND python3 ../generate_headers.py
+  COMMAND ${Python3_EXECUTABLE} ../generate_headers.py
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
 )
 
